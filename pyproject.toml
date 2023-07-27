@@ -11,6 +11,7 @@ fastapi = "^0.100"
 pydantic = "^2.0"
 pyvisa = "^1.13"
 "ruamel.yaml" = "^0.17"
+PyVISA-py = "^0.7.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"

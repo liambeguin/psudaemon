@@ -208,6 +208,26 @@ python-versions = ">=3.8"
 typing-extensions = "*"
 
 [[package]]
+name = "pyvisa-py"
+version = "0.7.0"
+description = "Pure Python implementation of a VISA library."
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[package.dependencies]
+pyvisa = ">=1.13.0"
+typing-extensions = "*"
+
+[package.extras]
+gpib-ctypes = ["gpib-ctypes (>=0.3.0)"]
+hislip-discovery = ["zeroconf"]
+psutil = ["psutil"]
+serial = ["pyserial (>=3.0)"]
+usb = ["pyusb"]
+vicp = ["pyvicp", "zeroconf"]
+
+[[package]]
 name = "ruamel.yaml"
 version = "0.17.32"
 description = "ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order"
@@ -296,7 +316,7 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "7df58007c9429c0d0001fc5bf07bbb161f9dc5df7f2f46782618d3b83159bd06"
+content-hash = "4c189960a08f81abfc0c1742fc88ed835f2d3d1979541fda626e9163c7e35747"
 
 [metadata.files]
 annotated-types = [
@@ -468,6 +488,10 @@ pytest = [
 pyvisa = [
     {file = "PyVISA-1.13.0-py3-none-any.whl", hash = "sha256:805c55a514b1993dd1e0e2b18377f36fb3db6c2cd4953886144307d0c80795ce"},
     {file = "PyVISA-1.13.0.tar.gz", hash = "sha256:89fa008b58465c928655459508513c51e942ca7bf3e2a727da869366e0c8f9c6"},
+]
+pyvisa-py = [
+    {file = "PyVISA-py-0.7.0.tar.gz", hash = "sha256:ca8d8a818f5cd50190af6ec5ea6356c0db6be6a879099ca78fe000a0165acaea"},
+    {file = "PyVISA_py-0.7.0-py3-none-any.whl", hash = "sha256:7d70ba035c38c89a50997bba21dc5e03a131bd60af8f10c6ecf664a9c72bee2b"},
 ]
 "ruamel.yaml" = [
     {file = "ruamel.yaml-0.17.32-py3-none-any.whl", hash = "sha256:23cd2ed620231677564646b0c6a89d138b6822a0d78656df7abda5879ec4f447"},

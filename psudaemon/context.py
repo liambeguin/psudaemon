@@ -1,5 +1,6 @@
 import os
 
+from functools import lru_cache
 from pathlib import Path
 
 from pydantic import parse_obj_as
@@ -22,3 +23,9 @@ def load_settings() -> types.Settings:
     data = _read_conffile()
     return types.Settings(**data['settings'])
 
+
+@lru_cache
+def load_units() -> list[types.Unit]:
+    '''Load unit configuration from file.'''
+    data = _read_conffile()
+    return parse_obj_as(list[types.Unit], list(data['units']))

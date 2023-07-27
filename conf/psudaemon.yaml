@@ -2,4 +2,10 @@ settings:
   port: 5000
   log_level: info
 
-units: []
+units:
+  - uri: 'TCPIP::192.168.50.51:inst0:INSTR'
+    name: psu1
+    model: 'Keysight E36313A'
+  - uri: 'TCPIP::11.230.211.40:inst0:INSTR'
+    name: psu2
+    model: 'Keysight E36313A'
