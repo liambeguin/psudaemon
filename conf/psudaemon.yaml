@@ -1,1 +1,5 @@
+settings:
+  port: 5000
+  log_level: info
+
 units: []
