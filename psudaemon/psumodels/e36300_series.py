@@ -5,7 +5,7 @@ import logging
 
 from pydantic import BaseModel, computed_field
 
-model_string = ['Keysight E36313A', 'E36300']
+model_string = ['Keysight Technologies,E36313A', 'E36300']
 
 
 class E36300_Channel(BaseModel):
@@ -17,6 +17,7 @@ class E36300_PSU(BaseModel):
     uri: str
     name: str
     model: Literal[*model_string]
+    visabackend: str = '@py'
 
     _channel_count: int = 3
     _channel_names = ['CH1', 'CH2', 'CH3']
@@ -27,10 +28,13 @@ class E36300_PSU(BaseModel):
         super().__init__(*args, **kwargs)
 
         try:
-            self._ep = pyvisa.ResourceManager('@py').open_resource(self.uri)
+            self._ep = pyvisa.ResourceManager(self.visabackend).open_resource(self.uri, write_termination='\n', read_termination='\n')
         except OSError as e:
             logging.warning(f'unable to open {self.uri}')
-            pass
+            return
+
+        idn = self._ep.query('*IDN?').strip()
+        assert self.model in idn, f'got {idn}'
 
     @computed_field
     def channels(self) -> list[E36300_Channel]:

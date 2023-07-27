@@ -3,9 +3,10 @@ settings:
   log_level: info
 
 units:
-  - uri: 'TCPIP::192.168.50.51:inst0:INSTR'
-    name: psu1
-    model: 'Keysight E36313A'
-  - uri: 'TCPIP::11.230.211.40:inst0:INSTR'
-    name: psu2
-    model: 'Keysight E36313A'
+  - name: psu1
+    model: 'Keysight Technologies,E36313A'
+    uri: 'TCPIP::192.168.50.51:inst0:INSTR'
+  - name: psu2
+    model: 'Keysight Technologies,E36313A'
+    uri: 'TCPIP::localhost:3333::INSTR'
+    visabackend: './psudaemon/psumodels/e36300.yaml@sim'

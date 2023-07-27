@@ -1,0 +1,30 @@
+spec: "1.0"
+devices:
+  E36300:
+    eom:
+      TCPIP INSTR:
+        q: "\n"
+        r: "\n"
+    error: ERROR
+    dialogues:
+      - q: "*IDN?"
+        r: "Keysight Technologies,E36313A,MY61004803,2.1.0-1.0.4-1.12"
+    properties:
+      date:
+        default: "+2023,+7,+26"
+        getter:
+          q: "SYST:DATE?"
+          r: "{:s}"
+        specs:
+          type: str
+      time:
+        default: "+3,+51,+6"
+        getter:
+          q: "SYST:TIME?"
+          r: "{:s}"
+        specs:
+          type: str
+
+resources:
+  TCPIP::localhost:3333::INSTR:
+    device: E36300
