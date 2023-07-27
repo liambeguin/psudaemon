@@ -6,7 +6,7 @@ from pathlib import Path
 from pydantic import parse_obj_as
 from ruamel.yaml import YAML
 
-from . import types
+from . import psumodels, types
 
 
 def _read_conffile() -> dict:
@@ -25,7 +25,7 @@ def load_settings() -> types.Settings:
 
 
 @lru_cache
-def load_units() -> list[types.Unit]:
+def load_units() -> list[psumodels.Unit]:
     '''Load unit configuration from file.'''
     data = _read_conffile()
-    return parse_obj_as(list[types.Unit], list(data['units']))
+    return parse_obj_as(list[psumodels.Unit], list(data['units']))

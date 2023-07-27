@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from typing_extensions import Annotated
 
 from .. import context, types
+from .. import psumodels
 
 
 
@@ -20,6 +21,6 @@ router = APIRouter()
 
 
 @router.get('/units')
-def get_units(units: Annotated[list[types.Unit], Depends(context.load_units)]) -> list[UnitResp]:
+def get_units(units: Annotated[list[psumodels.Unit], Depends(context.load_units)]) -> list[UnitResp]:
     '''List all Power Supply Units in the instance.'''
     return units
