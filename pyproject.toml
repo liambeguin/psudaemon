@@ -10,6 +10,38 @@ python = "^3.8"
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"
 
+[tool.ruff]
+select = [
+        "ALL",
+        "D",    # pydocstyle
+        "E",    # pycodestyl
+        "W",    # pycodestyl
+        "F",    # pyflake
+        "I001", # isort
+        "UP",
+        "ERA",
+        "COM",
+]
+extend-ignore = [
+	"D100",
+	"D300",
+]
+
+tab-size = 4
+target-version = "py38"
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+[tool.ruff.isort]
+lines-between-types = 1
+order-by-type = true
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "single"
+inline-quotes = "single"
+multiline-quotes = "single"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
