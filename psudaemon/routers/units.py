@@ -9,12 +9,11 @@ from .. import context, types
 from .. import psumodels
 
 
-
 class UnitResp(BaseModel):
     uri: str
     name: str
     model: str
-    active: bool
+    enabled: bool
 
 
 router = APIRouter()

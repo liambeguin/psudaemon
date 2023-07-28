@@ -47,5 +47,5 @@ class E36300_PSU(BaseModel):
         return self._channels
 
     @computed_field
-    def active(self) -> bool:
+    def enabled(self) -> bool:
         return self._ep is not None
