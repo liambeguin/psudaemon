@@ -10,7 +10,7 @@ def main():
     settings = load_settings()
 
     app = FastAPI()
-    app.include_router(monitoring.router)
     app.include_router(units.router)
+    app.include_router(monitoring.router)
 
     uvicorn.run(app, host='0.0.0.0', port=settings.port, log_level=settings.log_level)
