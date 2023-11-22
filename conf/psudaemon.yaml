@@ -6,7 +6,7 @@ settings:
 units:
   - name: psu1
     model: 'Keysight Technologies,E36313A'
-    uri: 'TCPIP::192.168.50.51:inst0:INSTR'
+    uri: 'TCPIP::192.168.50.51::inst0::INSTR'
   - name: psu2
     model: 'Keysight Technologies,E36313A'
     uri: 'TCPIP::localhost:3333::INSTR'
