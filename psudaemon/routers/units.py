@@ -26,22 +26,22 @@ def get_units(units: Units) -> List[UnitResp]:
     return units.values()
 
 
-@router.get('/units/{name}')
-def get_psu(name: str, units: Units) -> psumodels.Unit:
+@router.get('/units/{psu}')
+def get_psu(psu: str, units: Units) -> psumodels.Unit:
     '''Show Power Supply Unit instance.'''
-    supply, _ = helpers.check_user_input(units, name)
+    supply, _ = helpers.check_user_input(units, psu)
     return supply
 
 
-@router.get('/units/{name}/channels')
-def get_channel(name: str, units: Units) -> List[psumodels.Channel]:
+@router.get('/units/{psu}/channels')
+def get_channel(psu: str, units: Units) -> List[psumodels.Channel]:
     '''Show Power Supply Unit instance.'''
-    supply, _ = helpers.check_user_input(units, name)
+    supply, _ = helpers.check_user_input(units, psu)
     return supply.channels
 
 
-@router.get('/units/{name}/{channel}')
-def get_channel(name: str, channel: int, units: Units) -> psumodels.Channel:
+@router.get('/units/{psu}/{ch}')
+def get_channel(psu: str, ch: int, units: Units) -> psumodels.Channel:
     '''Show Power Supply Unit instance.'''
-    supply, channel = helpers.check_user_input(units, name, channel)
+    supply, channel = helpers.check_user_input(units, psu, ch)
     return channel
