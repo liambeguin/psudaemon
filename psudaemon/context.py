@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 from functools import lru_cache
 from pathlib import Path
@@ -25,7 +26,7 @@ def load_settings() -> types.Settings:
 
 
 @lru_cache
-def load_units() -> list[psumodels.Unit]:
+def load_units() -> List[psumodels.Unit]:
     '''Load unit configuration from file.'''
     data = _read_conffile()
-    return parse_obj_as(list[psumodels.Unit], list(data['units']))
+    return parse_obj_as(List[psumodels.Unit], list(data['units']))
