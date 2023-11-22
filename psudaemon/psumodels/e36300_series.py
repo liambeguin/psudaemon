@@ -63,7 +63,7 @@ class E36300_PSU(BaseModel):
     pyvisa_args: Dict[str, Any] = {}
     channel_indices: List[int] = [1, 2, 3]
 
-    _channels: List[E36300_Channel] = []
+    _channels: Dict[int, E36300_Channel] = {}
     _ep: pyvisa.resources.Resource = None
 
     def __init__(self, *args, **kwargs) -> None:
@@ -79,17 +79,17 @@ class E36300_PSU(BaseModel):
         assert self.model in idn, f'got {idn}'
 
     @computed_field
-    def channels(self) -> List[E36300_Channel]:
+    def channels(self) -> Dict[int, E36300_Channel]:
         if self._channels:
             return self._channels
 
         for i in self.channel_indices:
-            self._channels.append(E36300_Channel(
+            self._channels[i] = E36300_Channel(
                 index=i,
                 name=f'CH{i}',
                 model=self.model,
                 _ep=self._ep,
-            ))
+            )
 
         return self._channels
 
