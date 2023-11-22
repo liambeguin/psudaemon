@@ -1,13 +1,8 @@
-from typing import Optional
-from pydantic import BaseModel, ConfigDict, Field
+from typing import Any, Dict
 
-
-class SettingsUvicorn(BaseModel):
-    port: int
-    log_level: str = 'info'
-    timeout_keep_alive: Optional[int]
+from pydantic import BaseModel, ConfigDict
 
 
 class Settings(BaseModel):
     model_config = ConfigDict(extra='forbid')
-    uvicorn: SettingsUvicorn
+    uvicorn: Dict[str, Any] = {}
