@@ -1,4 +1,4 @@
-from typing import Literal, List
+from typing import Any, Dict, Literal, List, Union
 
 import pyvisa
 import logging
@@ -12,6 +12,46 @@ model_string = ('Keysight Technologies,E36313A', 'E36300')
 class E36300_Channel(BaseModel):
     index: int
     model: Literal[model_string]
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._ep = kwargs.get('_ep', None)
+
+    @computed_field
+    def current(self) -> float:
+        return float(self._ep.query(f'meas:curr? (@{self.index})'))
+
+    @computed_field
+    def current_limit(self) -> float:
+        return float(self._ep.query(f'curr? (@{self.index})'))
+
+    @current_limit.setter
+    def current_limit(self, current: Union[int, float]) -> Union[int, float]:
+        self._ep.write(f'curr {current} (@{self.index})')
+        return current
+
+    @computed_field
+    def state(self) -> bool:
+        return bool(int(self._ep.query(f'outp? (@{self.index})')))
+
+    @state.setter
+    def state(self, state: Union[bool]) -> bool:
+        s = int(bool(state))
+        self._ep.write(f'outp {s}, (@{self.index})')
+        return s
+
+    @computed_field
+    def voltage(self) -> float:
+        return float(self._ep.query(f'meas:volt? (@{self.index})'))
+
+    @computed_field
+    def voltage_limit(self) -> float:
+        return float(self._ep.query(f'volt? (@{self.index})'))
+
+    @voltage_limit.setter
+    def voltage_limit(self, volt: Union[int, float]) -> Union[int, float]:
+        self._ep.write(f'volt {volt} (@{self.index})')
+        return volt
 
 
 class E36300_PSU(BaseModel):
@@ -44,7 +84,7 @@ class E36300_PSU(BaseModel):
             return self._channels
 
         for i in range(self._channel_count):
-            self._channels.append(E36300_Channel(index=i, model=self.model))
+            self._channels.append(E36300_Channel(index=i, model=self.model, _ep=self._ep))
 
         return self._channels
 
