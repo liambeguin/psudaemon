@@ -5,12 +5,13 @@ import logging
 
 from pydantic import BaseModel, computed_field
 
+
 model_string = ('Keysight Technologies,E36313A', 'E36300')
 
 
 class E36300_Channel(BaseModel):
     index: int
-    _model: Literal[model_string] = model_string[0]
+    model: Literal[model_string]
 
 
 class E36300_PSU(BaseModel):
@@ -42,7 +43,7 @@ class E36300_PSU(BaseModel):
             return self._channels
 
         for i in range(self._channel_count):
-            self._channels.append(E36300_Channel(index=i))
+            self._channels.append(E36300_Channel(index=i, model=self.model))
 
         return self._channels
 

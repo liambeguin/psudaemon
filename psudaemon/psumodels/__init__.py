@@ -12,5 +12,5 @@ Unit = Annotated[Union[
 
 Channel = Annotated[Union[
     e36300_series.E36300_Channel,
-], Field(discriminator='_model')]
+], Field(discriminator='model')]
 
