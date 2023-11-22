@@ -13,4 +13,4 @@ def main():
     app.include_router(units.router)
     app.include_router(monitoring.router)
 
-    uvicorn.run(app, host='0.0.0.0', port=settings.port, log_level=settings.log_level)
+    uvicorn.run(app, host='0.0.0.0', **dict(settings.uvicorn))

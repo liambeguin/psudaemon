@@ -1,6 +1,7 @@
 settings:
-  port: 5000
-  log_level: info
+  uvicorn:
+    port: 5000
+    log_level: info
 
 units:
   - name: psu1
