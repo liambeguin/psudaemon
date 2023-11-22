@@ -11,6 +11,7 @@ model_string = ('Keysight Technologies,E36313A', 'E36300')
 
 class E36300_Channel(BaseModel):
     index: int
+    name: str
     model: Literal[model_string]
 
     def __init__(self, *args, **kwargs) -> None:
@@ -60,9 +61,8 @@ class E36300_PSU(BaseModel):
     model: Literal[model_string]
     visabackend: str = '@py'
     pyvisa_args: Dict[str, Any] = {}
+    channel_indices: List[int] = [1, 2, 3]
 
-    _channel_count: int = 3
-    _channel_names = ['CH1', 'CH2', 'CH3']
     _channels: List[E36300_Channel] = []
     _ep: pyvisa.resources.Resource = None
 
@@ -83,8 +83,13 @@ class E36300_PSU(BaseModel):
         if self._channels:
             return self._channels
 
-        for i in range(self._channel_count):
-            self._channels.append(E36300_Channel(index=i, model=self.model, _ep=self._ep))
+        for i in self.channel_indices:
+            self._channels.append(E36300_Channel(
+                index=i,
+                name=f'CH{i}',
+                model=self.model,
+                _ep=self._ep,
+            ))
 
         return self._channels
 
