@@ -11,3 +11,6 @@ units:
     model: 'Keysight Technologies,E36313A'
     uri: 'TCPIP::localhost:3333::INSTR'
     visabackend: './psudaemon/psumodels/e36300.yaml@sim'
+    pyvisa_args:
+      write_termination: "\n"
+      read_termination: "\n"

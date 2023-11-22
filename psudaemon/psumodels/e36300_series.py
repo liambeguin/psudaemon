@@ -19,6 +19,7 @@ class E36300_PSU(BaseModel):
     name: str
     model: Literal[model_string]
     visabackend: str = '@py'
+    pyvisa_args: Dict[str, Any] = {}
 
     _channel_count: int = 3
     _channel_names = ['CH1', 'CH2', 'CH3']
@@ -29,7 +30,7 @@ class E36300_PSU(BaseModel):
         super().__init__(*args, **kwargs)
 
         try:
-            self._ep = pyvisa.ResourceManager(self.visabackend).open_resource(self.uri, write_termination='\n', read_termination='\n')
+            self._ep = pyvisa.ResourceManager(self.visabackend).open_resource(self.uri, **self.pyvisa_args)
         except OSError as e:
             logging.warning(f'unable to open {self.uri}')
             return
