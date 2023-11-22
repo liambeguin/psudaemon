@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import Dict
 
 from functools import lru_cache
 from pathlib import Path
@@ -26,7 +26,11 @@ def load_settings() -> types.Settings:
 
 
 @lru_cache
-def load_units() -> List[psumodels.Unit]:
+def load_units() -> Dict[str, psumodels.Unit]:
     '''Load unit configuration from file.'''
     data = _read_conffile()
-    return parse_obj_as(List[psumodels.Unit], list(data['units']))
+
+    # rekey for easy access
+    units = {k['name']: k for k in data['units']}
+
+    return parse_obj_as(Dict[str, psumodels.Unit], units)
