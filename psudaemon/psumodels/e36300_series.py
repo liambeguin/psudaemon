@@ -1,10 +1,10 @@
-from typing import Any, Dict, Literal, List, Union
-
-import pyvisa
 import logging
 
-from pydantic import BaseModel, computed_field
+from typing import Any, Dict, List, Literal, Union
 
+import pyvisa
+
+from pydantic import BaseModel, computed_field
 
 model_string = ('Keysight Technologies,E36313A', 'E36300')
 
@@ -71,7 +71,7 @@ class E36300_PSU(BaseModel):
 
         try:
             self._ep = pyvisa.ResourceManager(self.visabackend).open_resource(self.uri, **self.pyvisa_args)
-        except OSError as e:
+        except OSError:
             logging.warning(f'unable to open {self.uri}')
             return
 

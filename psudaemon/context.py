@@ -1,8 +1,8 @@
 import os
-from typing import Dict
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Dict
 
 from pydantic import parse_obj_as
 from ruamel.yaml import YAML
