@@ -22,7 +22,7 @@ router = APIRouter()
 
 @router.get('/units')
 def get_units(units: Units) -> List[UnitResp]:
-    '''List all Power Supply Units in the instance.'''
+    '''List all power supplies of this instance.'''
     return units.values()
 
 
@@ -34,14 +34,14 @@ def get_psu(psu: str, units: Units) -> psumodels.Unit:
 
 
 @router.get('/units/{psu}/channels')
-def get_channel(psu: str, units: Units) -> List[psumodels.Channel]:
-    '''Show Power Supply Unit instance.'''
+def get_psu_channels(psu: str, units: Units) -> List[psumodels.Channel]:
+    '''Return all channels for a given power supply.'''
     supply, _ = helpers.check_user_input(units, psu)
     return supply.channels
 
 
 @router.get('/units/{psu}/{ch}')
-def get_channel(psu: str, ch: int, units: Units) -> psumodels.Channel:
-    '''Show Power Supply Unit instance.'''
+def get_psu_channel(psu: str, ch: int, units: Units) -> psumodels.Channel:
+    '''Return a single channel for a given power supply.'''
     supply, channel = helpers.check_user_input(units, psu, ch)
     return channel
