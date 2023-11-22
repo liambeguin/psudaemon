@@ -48,5 +48,5 @@ class E36300_PSU(BaseModel):
         return self._channels
 
     @computed_field
-    def enabled(self) -> bool:
+    def online(self) -> bool:
         return self._ep is not None

@@ -13,7 +13,7 @@ class UnitResp(BaseModel):
     uri: str
     name: str
     model: str
-    enabled: bool
+    online: bool
 
 
 router = APIRouter()
