@@ -5,18 +5,11 @@ import logging
 from typing import Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
 from typing_extensions import Annotated
 
 from psudaemon import context, helpers, psumodels
 
 Units = Annotated[Dict[str, psumodels.Unit], Depends(context.load_units)]
-
-class UnitResp(BaseModel):
-    uri: str
-    name: str
-    model: str
-    online: bool
 
 
 router = APIRouter()
@@ -24,9 +17,20 @@ logger = logging.getLogger('uvicorn')
 
 
 @router.get('/units')
-def get_units(units: Units) -> List[UnitResp]:
+def get_units(units: Units) -> List[Dict[str, Any]]:
     '''List all power supplies of this instance.'''
-    return units.values()
+    ret = []
+    for psu in units.values():
+        for channel in psu.channels.values():
+            c = channel.model_dump()
+            c.update({
+                'psu': psu.name,
+                'online': psu.online,
+                'idn': psu.idn,
+            })
+            ret.append(c)
+
+    return ret
 
 
 @router.get('/units/{psu}')
