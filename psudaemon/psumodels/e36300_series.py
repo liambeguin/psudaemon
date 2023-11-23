@@ -78,6 +78,13 @@ class E36300_PSU(BaseModel):
         idn = self._ep.query('*IDN?').strip()
         assert self.model in idn, f'got {idn}'
 
+        f = ['manufacturer', 'model', 'serial', 'revision']
+        self._idn = {f[i]: val for i, val in enumerate(idn.split(','))}
+
+    @computed_field
+    def idn(self) -> Dict[str,str]:
+        return self._idn
+
     @computed_field
     def channels(self) -> Dict[int, E36300_Channel]:
         if self._channels:
