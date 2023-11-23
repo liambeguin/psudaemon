@@ -28,7 +28,7 @@ class E36300_Channel(BaseModel):
 
     @current_limit.setter
     def current_limit(self, current: Union[int, float]) -> Union[int, float]:
-        self._ep.write(f'curr {current} (@{self.index})')
+        self._ep.write(f'curr {current}, (@{self.index})')
         return current
 
     @computed_field
@@ -51,7 +51,7 @@ class E36300_Channel(BaseModel):
 
     @voltage_limit.setter
     def voltage_limit(self, volt: Union[int, float]) -> Union[int, float]:
-        self._ep.write(f'volt {volt} (@{self.index})')
+        self._ep.write(f'volt {volt}, (@{self.index})')
         return volt
 
 
