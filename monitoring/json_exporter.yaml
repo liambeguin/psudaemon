@@ -1,0 +1,17 @@
+---
+modules:
+  default:
+    metrics:
+      - name: channel_data
+        type: object
+        path: "{ ['*'] }"
+        labels:
+          index: '{.index}'
+          name: '{.name}'
+          model: '{.model}'
+        values:
+          current_limit: '{.current_limit}'
+          voltage_limit: '{.voltage_limit}'
+          current: '{.current}'
+          voltage: '{.voltage}'
+          state: '{.state}'

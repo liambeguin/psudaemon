@@ -1,0 +1,19 @@
+global:
+  scrape_interval: "5s"
+
+scrape_configs:
+- job_name: psudaemon
+  metrics_path: /probe
+  params:
+    module: [default]
+  static_configs:
+    - targets:
+      - "http://apatros:5000/units/psu1/channels"
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      ## Location of the json exporter's real <hostname>:<port>
+      replacement: 127.0.0.1:7979 # equivalent to "localhost:7979"
