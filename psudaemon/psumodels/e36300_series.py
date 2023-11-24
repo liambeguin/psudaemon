@@ -1,4 +1,5 @@
 import logging
+import threading
 
 from typing import Any, Dict, List, Literal, Union
 
@@ -7,6 +8,24 @@ import pyvisa
 from pydantic import BaseModel, computed_field
 
 model_string = ('Keysight Technologies,E36313A', 'E36300')
+
+
+class Endpoint:
+    def __init__(self, ep):
+        self.ep = ep
+        self.lock = threading.Lock()
+
+    def write(self, *args, **kwargs):
+        self.lock.acquire()
+        self.ep.write(*args, **kwargs)
+        self.lock.release()
+
+    def query(self, *args, **kwargs):
+        self.lock.acquire()
+        ret = self.ep.query(*args, **kwargs)
+        self.lock.release()
+
+        return ret
 
 
 class E36300_Channel(BaseModel):
@@ -64,13 +83,18 @@ class E36300_PSU(BaseModel):
     channel_indices: List[int] = [1, 2, 3]
 
     _channels: Dict[int, E36300_Channel] = {}
-    _ep: pyvisa.resources.Resource = None
+    _ep: Endpoint = None
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         try:
-            self._ep = pyvisa.ResourceManager(self.visabackend).open_resource(self.uri, **self.pyvisa_args)
+            self._ep = Endpoint(pyvisa.ResourceManager(
+                self.visabackend).open_resource(
+                    self.uri,
+                    **self.pyvisa_args,
+                ),
+            )
         except OSError:
             logging.warning(f'unable to open {self.uri}')
             return
