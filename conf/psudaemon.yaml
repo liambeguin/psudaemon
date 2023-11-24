@@ -9,10 +9,3 @@ units:
     uri: 'TCPIP::192.168.50.51::inst0::INSTR'
     pyvisa_args:
       open_timeout: 5000
-  - name: psu2
-    model: 'Keysight Technologies,E36313A'
-    uri: 'TCPIP::localhost:3333::INSTR'
-    visabackend: './psudaemon/psumodels/e36300.yaml@sim'
-    pyvisa_args:
-      write_termination: "\n"
-      read_termination: "\n"
