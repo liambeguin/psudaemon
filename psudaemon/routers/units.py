@@ -12,8 +12,21 @@ from psudaemon import context, helpers, psumodels
 Units = Annotated[Dict[str, psumodels.Unit], Depends(context.load_units)]
 
 
+class UnitResp(BaseModel):
+    uri: str
+    name: str
+    model: str
+    online: bool
+
+
 router = APIRouter()
 logger = logging.getLogger('uvicorn')
+
+
+@router.get('/units')
+def get_units(units: Units) -> List[UnitResp]:
+    '''List all power supplies of this instance.'''
+    return units.values()
 
 
 @router.get('/channels')
