@@ -16,9 +16,9 @@ router = APIRouter()
 logger = logging.getLogger('uvicorn')
 
 
-@router.get('/units')
-def get_units(units: Units) -> List[Dict[str, Any]]:
-    '''List all power supplies of this instance.'''
+@router.get('/channels')
+def get_channels(units: Units) -> List[Dict[str, Any]]:
+    '''List all power supply channels of this instance.'''
     ret = []
     for psu in units.values():
         for channel in psu.channels.values():
