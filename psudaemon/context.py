@@ -1,13 +1,20 @@
+from __future__ import annotations
+
 import os
 
 from functools import lru_cache
 from pathlib import Path
-from typing import Dict
+from typing import Any, Dict
 
-from pydantic import parse_obj_as
+from pydantic import BaseModel, ConfigDict, parse_obj_as
 from ruamel.yaml import YAML
 
-from . import psumodels, types
+from . import psumodels
+
+
+class Settings(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    uvicorn: Dict[str, Any] = {}
 
 
 def _read_conffile() -> dict:
@@ -19,10 +26,10 @@ def _read_conffile() -> dict:
         return yaml.load(f.read())
 
 
-def load_settings() -> types.Settings:
+def load_settings() -> Settings:
     '''Load settings from file.'''
     data = _read_conffile()
-    return types.Settings(**data['settings'])
+    return Settings(**data['settings'])
 
 
 @lru_cache

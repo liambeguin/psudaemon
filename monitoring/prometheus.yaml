@@ -8,7 +8,7 @@ scrape_configs:
     module: [default]
   static_configs:
     - targets:
-      - "http://apatros:5000/channels"
+      - "http://apatros:5000/monitoring/channels"
   relabel_configs:
     - source_labels: [__address__]
       target_label: __param_target
