@@ -17,7 +17,6 @@ def get_channels(units: types.Units) -> List[Dict[str, Any]]:
         for channel in psu.channels.values():
             c = channel.model_dump()
             c.update({
-                'name': psu.name,
                 'online': psu.online,
                 'idn': psu.idn,
             })

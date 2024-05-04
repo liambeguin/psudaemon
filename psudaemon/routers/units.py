@@ -54,6 +54,7 @@ def post_channel(
     ch: int,
     units: types.Units,
     state: Optional[bool] = None,
+    name: Optional[str] = None,
     current_limit: Optional[float] = None,
     voltage_limit: Optional[float] = None) -> psumodels.Channel:
     '''Configure a single channel for a given power supply.'''
@@ -74,5 +75,11 @@ def post_channel(
         was = channel.state
         channel.state = state
         logger.info(f'setting {psu}/{ch} state to {state} (was: {was})')
+
+    if name is not None:
+        was = channel.name
+        channel.name = name
+        logger.info(f'setting {psu}/{ch} name to {name} (was: {was})')
+
 
     return supply.channels[ch]

@@ -31,6 +31,7 @@ class Endpoint:
 class E36300_Channel(BaseModel):
     index: int
     name: str
+    psu: str
     model: Literal[model_string]
 
     def __init__(self, *args, **kwargs) -> None:
@@ -118,6 +119,7 @@ class E36300_PSU(BaseModel):
             self._channels[i] = E36300_Channel(
                 index=i,
                 name=f'CH{i}',
+                psu=self.name,
                 model=self.model,
                 _ep=self._ep,
             )
