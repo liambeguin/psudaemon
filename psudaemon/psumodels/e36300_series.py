@@ -129,3 +129,14 @@ class E36300_PSU(BaseModel):
     @computed_field
     def online(self) -> bool:
         return self._ep is not None
+
+    def monitoring(self) -> List[E36300_Channel]:
+        ret = []
+        for channel in self.channels.values():
+            c = channel.model_dump()
+            c.update({
+                'online': self.online,
+                'idn': self.idn,
+            })
+            ret.append(c)
+        return ret

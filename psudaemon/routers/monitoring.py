@@ -14,12 +14,6 @@ def get_channels(units: types.Units) -> List[Dict[str, Any]]:
     '''List all power supply channels of this instance.'''
     ret = []
     for psu in units.values():
-        for channel in psu.channels.values():
-            c = channel.model_dump()
-            c.update({
-                'online': psu.online,
-                'idn': psu.idn,
-            })
-            ret.append(c)
+        ret.extend(psu.monitoring())
 
     return ret
