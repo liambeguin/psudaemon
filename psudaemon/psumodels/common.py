@@ -59,7 +59,7 @@ class PSU(BaseModel, abc.ABC):
 
     def monitoring(self):
         ret = []
-        for channel in self.channels:
+        for channel in self.channels.values():
             c = channel.model_dump()
             c.update(self.flatten_psu_idn())
             ret.append(c)

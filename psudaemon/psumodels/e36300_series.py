@@ -109,7 +109,7 @@ class E36300_PSU(common.PSU):
         self.idn = common.PSUIdn(**{f[i]: val for i, val in enumerate(idn.split(','))})
 
     @computed_field
-    def channels(self) -> List[E36300_Channel]:
+    def channels(self) -> Dict[int, E36300_Channel]:
         if self._channels:
             return self._channels
 
