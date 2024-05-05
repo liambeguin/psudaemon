@@ -1,6 +1,6 @@
 import abc
 
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 from pydantic import BaseModel, Field, computed_field
 
@@ -46,7 +46,7 @@ class PSU(BaseModel, abc.ABC):
 
     @computed_field
     @abc.abstractmethod
-    def channels(self) -> Dict[int, Channel]:
+    def channels(self) -> List[Channel]:
         pass
 
     def flatten_psu_idn(self) -> Dict[str, str]:
@@ -59,7 +59,7 @@ class PSU(BaseModel, abc.ABC):
 
     def monitoring(self):
         ret = []
-        for channel in self.channels.values():
+        for channel in self.channels:
             c = channel.model_dump()
             c.update(self.flatten_psu_idn())
             ret.append(c)

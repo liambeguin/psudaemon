@@ -1,7 +1,7 @@
 import json
 import subprocess
 
-from typing import Dict, List, Literal, Optional
+from typing import List, Literal, Optional
 
 from fastapi import HTTPException
 from pydantic import BaseModel, Field, computed_field
@@ -31,7 +31,7 @@ class ExternalPSU(common.PSU):
         return self._run(self.commands.ping).returncode
 
     @property
-    def channels(self) -> Dict[int, common.Channel]:
+    def channels(self) -> List[common.Channel]:
         if self.commands.get_channels is None:
             raise HTTPException(status_code=501, detail=f'get_channels() command not defined for {self.name}')
 

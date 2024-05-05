@@ -14,10 +14,13 @@ def check_user_input(
     '''Further validate user inputs.'''
     if psu not in units:
         raise HTTPException(status_code=404, detail='undefined psu')
-    if ch is not None and ch not in units[psu].channel_indices:
-        raise HTTPException(status_code=404, detail=f'channel out of range: {ch} not in {units[psu].channel_indices}')
+    if ch is not None and ch not in range(len(units[psu].channels)):
+        raise HTTPException(status_code=404, detail=f'channel out of range: {ch} not in range({len(units[psu].channels)})')
 
     psu = units[psu]
-    ch = psu.channels[ch] if ch is not None else None
+
+    if ch is not None:
+        ch = psu.channels[ch]
+        ch.psu_name = psu.name
 
     return psu, ch

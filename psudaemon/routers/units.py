@@ -28,7 +28,7 @@ def get_psu(psu: str, units: types.Units) -> psumodels.common.PSU:
 
 
 @router.get('/units/{psu}/channels')
-def get_psu_channels(psu: str, units: types.Units) -> Dict[int, psumodels.common.Channel]:
+def get_psu_channels(psu: str, units: types.Units) -> List[psumodels.common.Channel]:
     '''Return all channels for a given power supply.'''
     supply, _ = helpers.check_user_input(units, psu)
     return supply.channels

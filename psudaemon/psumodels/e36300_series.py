@@ -85,7 +85,7 @@ class E36300_PSU(common.PSU):
     pyvisa_args: Dict[str, Any] = {}
     channel_indices: List[int] = [1, 2, 3]
 
-    _channels: Dict[int, E36300_Channel] = {}
+    _channels: List[E36300_Channel] = []
     _ep: Endpoint = None
 
     def __init__(self, *args, **kwargs) -> None:
@@ -109,18 +109,18 @@ class E36300_PSU(common.PSU):
         self.idn = common.PSUIdn(**{f[i]: val for i, val in enumerate(idn.split(','))})
 
     @computed_field
-    def channels(self) -> Dict[int, E36300_Channel]:
+    def channels(self) -> List[E36300_Channel]:
         if self._channels:
             return self._channels
 
         for i in self.channel_indices:
-            self._channels[i] = E36300_Channel(
+            self._channels.append(E36300_Channel(
                 index=i,
                 name=f'CH{i}',
                 psu=self.name,
                 model=self.model,
                 _ep=self._ep,
-            )
+            ))
 
         return self._channels
 
