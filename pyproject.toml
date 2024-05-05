@@ -22,7 +22,7 @@ ruff = "*"
 psudaemon = "psudaemon.app:main"
 
 [tool.ruff]
-select = [
+lint.select = [
         "ALL",
         "D",    # pydocstyle
         "E",    # pycodestyl
@@ -33,7 +33,7 @@ select = [
         "ERA",
         "COM",
 ]
-extend-ignore = [
+lint.extend-ignore = [
   "D100",
   "D300",
   "UP006",  # Use `list` instead of `List` for type annotation
@@ -44,14 +44,14 @@ extend-ignore = [
 indent-width = 4
 target-version = "py38"
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 lines-between-types = 1
 order-by-type = true
 
-[tool.ruff.flake8-quotes]
+[tool.ruff.lint.flake8-quotes]
 docstring-quotes = "single"
 inline-quotes = "single"
 multiline-quotes = "single"
