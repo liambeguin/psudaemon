@@ -7,6 +7,8 @@ import pyvisa
 
 from pydantic import BaseModel, computed_field
 
+from . import common
+
 model_string = ('Keysight Technologies,E36313A', 'E36300')
 
 
@@ -75,7 +77,7 @@ class E36300_Channel(BaseModel):
         return volt
 
 
-class E36300_PSU(BaseModel):
+class E36300_PSU(common.PSU):
     uri: str
     name: str
     model: Literal[model_string]
@@ -104,14 +106,10 @@ class E36300_PSU(BaseModel):
         assert self.model in idn, f'got {idn}'
 
         f = ['manufacturer', 'model', 'serial', 'revision']
-        self._idn = {f[i]: val for i, val in enumerate(idn.split(','))}
+        self.idn = common.PSUIdn(**{f[i]: val for i, val in enumerate(idn.split(','))})
 
     @computed_field
-    def idn(self) -> Dict[str,str]:
-        return self._idn
-
-    @computed_field
-    def channels(self) -> Dict[int, E36300_Channel]:
+    def channels(self) -> List[E36300_Channel]:
         if self._channels:
             return self._channels
 
@@ -129,14 +127,3 @@ class E36300_PSU(BaseModel):
     @computed_field
     def online(self) -> bool:
         return self._ep is not None
-
-    def monitoring(self) -> List[E36300_Channel]:
-        ret = []
-        for channel in self.channels.values():
-            c = channel.model_dump()
-            c.update({
-                'online': self.online,
-                'idn': self.idn,
-            })
-            ret.append(c)
-        return ret

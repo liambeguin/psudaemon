@@ -10,39 +10,32 @@ from pydantic import BaseModel
 from psudaemon import helpers, psumodels, types
 
 
-class UnitResp(BaseModel):
-    uri: str
-    name: str
-    model: str
-    online: bool
-
-
 router = APIRouter()
 logger = logging.getLogger('uvicorn')
 
 
 @router.get('/units')
-def get_units(units: types.Units) -> List[UnitResp]:
+def get_units(units: types.Units) -> List[psumodels.common.PSU]:
     '''List all power supplies of this instance.'''
     return units.values()
 
 
 @router.get('/units/{psu}')
-def get_psu(psu: str, units: types.Units) -> psumodels.Unit:
+def get_psu(psu: str, units: types.Units) -> psumodels.common.PSU:
     '''Show Power Supply Unit instance.'''
     supply, _ = helpers.check_user_input(units, psu)
     return supply
 
 
 @router.get('/units/{psu}/channels')
-def get_psu_channels(psu: str, units: types.Units) -> Dict[int, psumodels.Channel]:
+def get_psu_channels(psu: str, units: types.Units) -> Dict[int, psumodels.common.Channel]:
     '''Return all channels for a given power supply.'''
     supply, _ = helpers.check_user_input(units, psu)
     return supply.channels
 
 
 @router.get('/units/{psu}/{ch}')
-def get_psu_channel(psu: str, ch: int, units: types.Units) -> psumodels.Channel:
+def get_psu_channel(psu: str, ch: int, units: types.Units) -> psumodels.common.Channel:
     '''Return a single channel for a given power supply.'''
     supply, channel = helpers.check_user_input(units, psu, ch)
     return channel
@@ -56,7 +49,7 @@ def post_channel(
     state: Optional[bool] = None,
     name: Optional[str] = None,
     current_limit: Optional[float] = None,
-    voltage_limit: Optional[float] = None) -> psumodels.Channel:
+    voltage_limit: Optional[float] = None) -> psumodels.common.Channel:
     '''Configure a single channel for a given power supply.'''
 
     supply, channel = helpers.check_user_input(units, psu, ch)
