@@ -33,6 +33,8 @@ class Endpoint:
 class E36300_Channel(BaseModel):
     index: int
     name: str
+    psu: str
+    model: Literal[model_string]
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -106,6 +108,11 @@ class E36300_PSU(common.PSU):
         f = ['manufacturer', 'model', 'serial', 'revision']
         self.idn = common.PSUIdn(**{f[i]: val for i, val in enumerate(idn.split(','))})
 
+    @computed_field
+    def channels(self) -> List[E36300_Channel]:
+        if self._channels:
+            return self._channels
+
         for i in self.channel_indices:
             self._channels.append(E36300_Channel(
                 index=i,
@@ -115,9 +122,7 @@ class E36300_PSU(common.PSU):
                 _ep=self._ep,
             ))
 
-    @computed_field
-    def channels(self) -> List[common.Channel]:
-        return [common.Channel(**ch.model_dump(), **self.flatten_psu_idn()) for ch in self._channels]
+        return self._channels
 
     @computed_field
     def online(self) -> bool:
