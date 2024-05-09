@@ -76,6 +76,9 @@ class E36300_Channel(BaseModel):
         self._ep.write(f'volt {volt}, (@{self.index})')
         return volt
 
+    def model_dump(self, *args, **kwargs):
+        return common.Channel(**super.model_dump())
+
 
 class E36300_PSU(common.PSU):
     uri: str
