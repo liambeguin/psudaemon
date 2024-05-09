@@ -33,8 +33,7 @@ class Endpoint:
 class E36300_Channel(BaseModel):
     index: int
     name: str
-    psu: str
-    model: Literal[model_string]
+    psu_name: str
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -77,7 +76,12 @@ class E36300_Channel(BaseModel):
         return volt
 
     def model_dump(self, *args, **kwargs):
-        return common.Channel(**super.model_dump())
+        return common.Channel(
+            **{
+                'psu.name': self.psu,
+            },
+            **super().model_dump(),
+        ).model_dump()
 
 
 class E36300_PSU(common.PSU):
@@ -120,8 +124,7 @@ class E36300_PSU(common.PSU):
             self._channels.append(E36300_Channel(
                 index=i,
                 name=f'CH{i}',
-                psu=self.name,
-                model=self.model,
+                psu_name=self.name,
                 _ep=self._ep,
             ))
 
