@@ -74,5 +74,6 @@ def post_channel(
         channel.name = name
         logger.info(f'setting {psu}/{ch} name to {name} (was: {was})')
 
-
-    return supply.channels[ch]
+    # readback
+    supply, channel = helpers.check_user_input(units, psu, ch)
+    return channel
