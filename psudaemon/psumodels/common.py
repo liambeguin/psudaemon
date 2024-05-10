@@ -78,6 +78,14 @@ class PSU(BaseModel):
     def channels(self) -> List[Channel]:
         raise NotImplementedError(f'{self.name}: common.PSU.channels')
 
+    def get_channel(self, ref: Union[int, str]) -> Channel:
+        for ch in self.channels:
+            if isinstance(ref, int) and ref == ch.index:
+                return ch
+            elif isinstance(ref, str) and ref == ch.name:
+                return ch
+        return None
+
     def flatten_psu_idn(self) -> Dict[str, str]:
         ret = { 'psu_name': self.name }
         for k, v in self.idn.model_dump().items():
