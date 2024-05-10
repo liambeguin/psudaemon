@@ -6,34 +6,34 @@ from typing import List, Optional
 
 from fastapi import APIRouter, HTTPException
 
-from psudaemon import helpers, psumodels, types
+from psudaemon import helpers, types
 
 router = APIRouter()
 logger = logging.getLogger('uvicorn')
 
 
 @router.get('/units')
-def get_units(units: types.Units) -> List[psumodels.common.PSU]:
+def get_units(units: types.Units) -> List[types.PSUModel]:
     '''List all power supplies of this instance.'''
     return units.values()
 
 
 @router.get('/units/{psu}')
-def get_psu(psu: str, units: types.Units) -> psumodels.common.PSU:
+def get_psu(psu: str, units: types.Units) -> types.PSUModel:
     '''Show Power Supply Unit instance.'''
     supply, _ = helpers.check_user_input(units, psu)
     return supply
 
 
 @router.get('/units/{psu}/channels')
-def get_psu_channels(psu: str, units: types.Units) -> List[psumodels.common.Channel]:
+def get_psu_channels(psu: str, units: types.Units) -> List[types.ChannelModel]:
     '''Return all channels for a given power supply.'''
     supply, _ = helpers.check_user_input(units, psu)
     return supply.channels
 
 
 @router.get('/units/{psu}/{ch}')
-def get_psu_channel(psu: str, ch: int, units: types.Units) -> psumodels.common.Channel:
+def get_psu_channel(psu: str, ch: int, units: types.Units) -> types.ChannelModel:
     '''Return a single channel for a given power supply.'''
     supply, channel = helpers.check_user_input(units, psu, ch)
     return channel
@@ -47,7 +47,7 @@ def post_channel(
     state: Optional[bool] = None,
     name: Optional[str] = None,
     current_limit: Optional[float] = None,
-    voltage_limit: Optional[float] = None) -> psumodels.common.Channel:
+    voltage_limit: Optional[float] = None) -> types.ChannelModel:
     '''Configure a single channel for a given power supply.'''
     supply, channel = helpers.check_user_input(units, psu, ch)
 
