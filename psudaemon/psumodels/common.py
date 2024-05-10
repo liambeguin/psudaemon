@@ -1,6 +1,5 @@
-import abc
-
-from typing import Dict, Optional, List
+from abc import ABC, abstractmethod
+from typing import Dict, List, Optional, Union
 
 from pydantic import BaseModel, Field, computed_field
 
@@ -12,27 +11,59 @@ class PSUIdn(BaseModel):
     revision: Optional[str]=Field(default=None)
 
 
-class Channel(BaseModel):
+class Channel(ABC, BaseModel):
     index: int=Field(description='Channel index')
     name: str=Field(description='Channel name')
 
-    state: bool=Field(description='Channel present state')
+    # injected by PSU
+    psu_name: str=Field(description='PSU name')
+    psu_idn_manuf:    Optional[str]=Field(default=None)
+    psu_idn_model:    Optional[str]=Field(default=None)
+    psu_idn_serial:   Optional[str]=Field(default=None)
+    psu_idn_revision: Optional[str]=Field(default=None)
 
-    current: float=Field(description='Channel instantaneous current measurement')
-    current_limit: float=Field(description='Channel current limit')
+    @abstractmethod
+    @computed_field(description='Channel instantaneous current measurement')
+    def current(self) -> float:
+        raise NotImplementedError(f'{self.name}: common.Channel.current')
 
-    voltage: float=Field(description='Channel instantaneous voltage measurement')
-    voltage_limit: float=Field(description='Channel voltage limit')
+    @abstractmethod
+    @computed_field(description='Channel current limit')
+    def current_limit(self) -> float:
+        ...
 
-    # injected in monitoring()
-    psu_name: str=Field(description='PSU name', alias='psu.name', serialization_alias='psu.name')
-    psu_idn_manuf:    Optional[str]=Field(default=None, alias='psu.idn.manufacturer', serialization_alias='psu.idn.manufacturer')
-    psu_idn_model:    Optional[str]=Field(default=None, alias='psu.idn.model',        serialization_alias='psu.idn.model')
-    psu_idn_serial:   Optional[str]=Field(default=None, alias='psu.idn.serial',       serialization_alias='psu.idn.serial')
-    psu_idn_revision: Optional[str]=Field(default=None, alias='psu.idn.revision',     serialization_alias='psu.idn.revision')
+    @abstractmethod
+    @current_limit.setter
+    def current_limit(self, current: Union[int, float]) -> Union[int, float]:
+        ...
+
+    @abstractmethod
+    @computed_field(description='Channel present state')
+    def state(self) -> bool:
+        raise NotImplementedError(f'{self.name}: common.Channel.state')
+
+    @abstractmethod
+    @state.setter
+    def state(self, state: Union[bool]) -> bool:
+        ...
+
+    @abstractmethod
+    @computed_field(description='Channel instantaneous voltage measurement')
+    def voltage(self) -> float:
+        raise NotImplementedError(f'{self.name}: common.Channel.voltage')
+
+    @abstractmethod
+    @computed_field(description='Channel voltage limit')
+    def voltage_limit(self) -> float:
+        ...
+
+    @abstractmethod
+    @voltage_limit.setter
+    def voltage_limit(self, volt: Union[int, float]) -> Union[int, float]:
+        ...
 
 
-class PSU(BaseModel, abc.ABC):
+class PSU(BaseModel):
     name: str=Field(description='PSU pretty name')
     model: str=Field(desciption='PSU model, used to infer psudaemon class')
 
@@ -40,21 +71,17 @@ class PSU(BaseModel, abc.ABC):
     idn: Optional[PSUIdn]=Field(description='PSU identification dict', default=None)
 
     @computed_field
-    @abc.abstractmethod
     def online(self) -> bool:
-        pass
+        raise NotImplementedError(f'{self.name}: common.PSU.online')
 
     @computed_field
-    @abc.abstractmethod
     def channels(self) -> List[Channel]:
-        pass
+        raise NotImplementedError(f'{self.name}: common.PSU.channels')
 
     def flatten_psu_idn(self) -> Dict[str, str]:
-        ret = {
-            'psu.name': self.name,
-        }
+        ret = { 'psu_name': self.name }
         for k, v in self.idn.model_dump().items():
-            ret[f'psu.idn.{k}'] = v
+            ret[f'psu_idn_{k}'] = v
         return ret
 
     def monitoring(self):

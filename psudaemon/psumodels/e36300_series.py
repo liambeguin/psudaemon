@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Literal, Union
 
 import pyvisa
 
-from pydantic import BaseModel, computed_field
+from pydantic import computed_field
 
 from . import common
 
@@ -30,11 +30,7 @@ class Endpoint:
         return ret
 
 
-class E36300_Channel(BaseModel):
-    index: int
-    name: str
-    psu_name: str
-
+class E36300_Channel(common.Channel):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._ep = kwargs.get('_ep', None)
@@ -74,14 +70,6 @@ class E36300_Channel(BaseModel):
     def voltage_limit(self, volt: Union[int, float]) -> Union[int, float]:
         self._ep.write(f'volt {volt}, (@{self.index})')
         return volt
-
-    def model_dump(self, *args, **kwargs):
-        return common.Channel(
-            **{
-                'psu.name': self.psu,
-            },
-            **super().model_dump(),
-        ).model_dump()
 
 
 class E36300_PSU(common.PSU):

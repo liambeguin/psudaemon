@@ -16,6 +16,22 @@ class Commands(BaseModel):
     get_channels: Optional[str]=Field(description='command to get all channels', default=None)
 
 
+class ExternalChannel(common.Channel):
+    raw: dict=Field(exclude=True)
+
+    @computed_field
+    def current(self) -> float:
+        return self.raw['current']
+
+    @computed_field
+    def state(self) -> bool:
+        return self.raw['state']
+
+    @computed_field
+    def voltage(self) -> float:
+        return self.raw['voltage']
+
+
 class ExternalPSU(common.PSU):
     model: Literal[model_string]
     commands: Commands
@@ -30,14 +46,14 @@ class ExternalPSU(common.PSU):
 
         return self._run(self.commands.ping).returncode
 
-    @property
-    def channels(self) -> List[common.Channel]:
+    @computed_field
+    def channels(self) -> List[ExternalChannel]:
         if self.commands.get_channels is None:
             raise HTTPException(status_code=501, detail=f'get_channels() command not defined for {self.name}')
 
         try:
             p = self._run(self.commands.get_channels)
-            return [common.Channel(**ch, **self.flatten_psu_idn()) for ch in json.loads(p.stdout)]
+            return [ExternalChannel(raw=ch, **ch, **self.flatten_psu_idn()) for ch in json.loads(p.stdout)]
         except Exception as e:
             print(e)
             raise HTTPException(status_code=500, detail='unable to parse monitoring output')
