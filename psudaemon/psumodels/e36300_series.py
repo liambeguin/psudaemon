@@ -5,7 +5,9 @@ from typing import Any, Dict, List, Literal, Union
 
 import pyvisa
 
-from pydantic import BaseModel, computed_field
+from pydantic import computed_field
+
+from . import common
 
 model_string = ('Keysight Technologies,E36313A', 'E36300')
 
@@ -28,11 +30,7 @@ class Endpoint:
         return ret
 
 
-class E36300_Channel(BaseModel):
-    index: int
-    name: str
-    model: Literal[model_string]
-
+class E36300_Channel(common.Channel):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._ep = kwargs.get('_ep', None)
@@ -74,7 +72,7 @@ class E36300_Channel(BaseModel):
         return volt
 
 
-class E36300_PSU(BaseModel):
+class E36300_PSU(common.PSU):
     uri: str
     name: str
     model: Literal[model_string]
@@ -82,7 +80,7 @@ class E36300_PSU(BaseModel):
     pyvisa_args: Dict[str, Any] = {}
     channel_indices: List[int] = [1, 2, 3]
 
-    _channels: Dict[int, E36300_Channel] = {}
+    _channels: List[E36300_Channel] = []
     _ep: Endpoint = None
 
     def __init__(self, *args, **kwargs) -> None:
@@ -103,24 +101,20 @@ class E36300_PSU(BaseModel):
         assert self.model in idn, f'got {idn}'
 
         f = ['manufacturer', 'model', 'serial', 'revision']
-        self._idn = {f[i]: val for i, val in enumerate(idn.split(','))}
+        self.idn = common.PSUIdn(**{f[i]: val for i, val in enumerate(idn.split(','))})
 
     @computed_field
-    def idn(self) -> Dict[str,str]:
-        return self._idn
-
-    @computed_field
-    def channels(self) -> Dict[int, E36300_Channel]:
+    def channels(self) -> List[E36300_Channel]:
         if self._channels:
             return self._channels
 
         for i in self.channel_indices:
-            self._channels[i] = E36300_Channel(
+            self._channels.append(E36300_Channel(
                 index=i,
                 name=f'CH{i}',
-                model=self.model,
+                psu_name=self.name,
                 _ep=self._ep,
-            )
+            ))
 
         return self._channels
 

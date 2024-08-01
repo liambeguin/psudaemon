@@ -10,14 +10,15 @@ from . import psumodels
 def check_user_input(
     units: dict[str, psumodels.Unit],
     psu: str,
-    ch: Optional[Union[int, None]] = None) -> Tuple[psumodels.Unit, psumodels.Channel]:
+    ch: Optional[Union[int, None]] = None) -> Tuple[psumodels.Unit, psumodels.common.Channel]:
     '''Further validate user inputs.'''
     if psu not in units:
         raise HTTPException(status_code=404, detail='undefined psu')
-    if ch is not None and ch not in units[psu].channel_indices:
-        raise HTTPException(status_code=404, detail=f'channel out of range: {ch} not in {units[psu].channel_indices}')
 
     psu = units[psu]
-    ch = psu.channels[ch] if ch is not None else None
+    chan = psu.get_channel(ch)
 
-    return psu, ch
+    if ch is not None and chan is None:
+        raise HTTPException(status_code=404, detail=f'psu {psu.name} has no channel {ch}')
+
+    return psu, chan

@@ -7,10 +7,10 @@ modules:
         path: "{ ['*'] }"
         labels:
           index: '{.index}'
-          psu: '{.psu}'
+          psu: '{.psu\.name}'
           name: '{.name}'
-          model: '{.idn.model}'
-          serial: '{.idn.serial}'
+          model: '{.psu\.idn\.model}'
+          serial: '{.psu\.idn\.serial}'
         values:
           current_limit: '{.current_limit}'
           voltage_limit: '{.voltage_limit}'
