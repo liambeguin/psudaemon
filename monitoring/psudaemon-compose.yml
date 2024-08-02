@@ -12,3 +12,27 @@ services:
       - ../conf/psudaemon.yaml:/config.yaml
     environment:
       - PSUDAEMON_CONF=/config.yaml
+
+  json-exporter:
+    image: quay.io/prometheuscommunity/json-exporter
+    container_name: json-exporter
+    network_mode: host
+    security_opt:
+      - label=disable
+    ports:
+      - 7979:7979
+    working_dir: /
+    volumes:
+      - ./json_exporter.yaml:/config.yml
+
+  prometheus:
+    image: quay.io/prometheus/prometheus
+    container_name: prometheus
+    restart: unless-stopped
+    network_mode: host
+    security_opt:
+      - label=disable
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
