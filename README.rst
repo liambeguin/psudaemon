@@ -124,7 +124,7 @@ Please refer to http://localhost:5000/docs for the detailed documentation.
      }
    ]
    $ # List all channels of a given PSU, here psu1
-   $ curl -s -X GET 'http://127.0.0.1:5000/psu1/channels' | jq .
+   $ curl -s -X GET 'http://127.0.0.1:5000/units/psu1/channels' | jq .
    {
      "1": {
        "index": 1,
