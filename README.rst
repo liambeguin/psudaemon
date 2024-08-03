@@ -58,6 +58,37 @@ structure.
    - ``uri`` URI of the PSU instance
    - ``pyvisa_args``: a dictionary passed directly to ``pyvisa.open_resource()``
 
+Monitoring
+----------
+PSUDaemon comes with a docker-compose demo that allows users to spin up a
+complete monitoring solution using psudaemon, prometheus, and grafana.
+This demo can be started using the following:
+
+.. code-block:: console
+
+   $ # setup conf/psudaemon.conf
+   $ cd monitoring
+   $ # make sure additional files are made available to the containers
+   $ docker-compose -f psudaemon-compose.yml up
+   Starting prometheus    ... done
+   Starting psudaemon     ... done
+   Starting json-exporter ... done
+   Starting grafana       ... done
+   Attaching to json-exporter, prometheus, psudaemon, grafana
+   prometheus       | ts=2024-08-02T22:06:53.847Z caller=manager.go:164 level=info component="rule manager" msg="Starting rule manager..."
+   grafana          | logger=plugins.registration t=2024-08-02T22:06:54.012565524Z level=error msg="Could not register plugin" pluginId=xychart error="plugin xychart is already registered"
+   grafana          | logger=plugins.initialization t=2024-08-02T22:06:54.012594933Z level=error msg="Could not initialize plugin" pluginId=xychart error="plugin xychart is already registered"
+   psudaemon        | INFO:     Started server process [1]
+   psudaemon        | INFO:     Waiting for application startup.
+   psudaemon        | INFO:     Application startup complete.
+   psudaemon        | INFO:     Uvicorn running on http://0.0.0.0:5000 (Press CTRL+C to quit)
+   psudaemon        | INFO:     127.0.0.1:51976 - "GET /monitoring/channels HTTP/1.1" 200 OK
+   psudaemon        | INFO:     127.0.0.1:51982 - "GET /monitoring/channels HTTP/1.1" 200 OK
+   ...
+
+
+Grafana should be acessible at http://localhost:3000/
+
 API
 ---
 Please refer to http://localhost:5000/docs for the detailed documentation.
