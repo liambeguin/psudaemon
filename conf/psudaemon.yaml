@@ -9,3 +9,12 @@ units:
     uri: 'TCPIP::192.168.50.51::inst0::INSTR'
     pyvisa_args:
       open_timeout: 5000
+
+  - name: external-psu-demo
+    model: 'external'
+    idn:
+      manufacturer: Manuf. 1
+      model: telemetry endpoint
+    commands:
+      get_channels: |
+        /path/to/some/command

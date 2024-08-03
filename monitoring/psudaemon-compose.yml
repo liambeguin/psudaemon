@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+  psudaemon:
+    container_name: psudaemon
+    image: psudaemon:latest
+    build: ../
+    network_mode: host
+    ports:
+      - 5000:5000
+    volumes:
+      - ../conf/psudaemon.yaml:/config.yaml
+    environment:
+      - PSUDAEMON_CONF=/config.yaml
+
+  json-exporter:
+    image: quay.io/prometheuscommunity/json-exporter
+    container_name: json-exporter
+    network_mode: host
+    security_opt:
+      - label=disable
+    ports:
+      - 7979:7979
+    working_dir: /
+    volumes:
+      - ./json_exporter.yaml:/config.yml
+
+  prometheus:
+    image: quay.io/prometheus/prometheus
+    container_name: prometheus
+    restart: unless-stopped
+    network_mode: host
+    security_opt:
+      - label=disable
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    network_mode: host
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana-storage:/var/lib/grafana
+
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_LOG_LEVEL=warning
+
+volumes:
+  grafana-storage:
