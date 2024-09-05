@@ -55,5 +55,4 @@ class ExternalPSU(common.PSU):
             p = self._run(self.commands.get_channels)
             return [ExternalChannel(raw=ch, **ch, **self.flatten_psu_idn()) for ch in json.loads(p.stdout)]
         except Exception as e:
-            print(e)
-            raise HTTPException(status_code=500, detail='unable to parse monitoring output')
+            raise HTTPException(status_code=500, detail=f'unable to parse monitoring output: {p}')
