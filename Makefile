@@ -15,6 +15,9 @@ start-prometheus:
 		-v ./monitoring/prometheus.yaml:/etc/prometheus/prometheus.yml \
 		quay.io/prometheus/prometheus
 
+prometheus-reload:
+	@podman exec prometheus killall -HUP prometheus
+
 start-exporter:
 	@podman run --rm \
 		--security-opt label=disable \
