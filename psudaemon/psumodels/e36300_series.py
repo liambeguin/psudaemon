@@ -113,9 +113,14 @@ class E36300_PSU(common.PSU):
             return self._channels
 
         for i in self.channel_indices:
+            try:
+                name = self.channel_data[i].name
+            except Exception:
+                name=f'CH{i}'
+
             self._channels.append(E36300_Channel(
                 index=i,
-                name=f'CH{i}',
+                name=name,
                 psu_name=self.name,
                 _ep=self._ep,
             ))

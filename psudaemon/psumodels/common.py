@@ -11,6 +11,12 @@ class PSUIdn(BaseModel):
     revision: Optional[str]=Field(default=None)
 
 
+class ChannelData(BaseModel):
+    name: str=Field(description='Channel name')
+    current_limit: Optional[Union[int, float]]=Field(description='Channel current limit', default=None)
+    voltage_limit: Optional[Union[int, float]]=Field(description='Channel voltage limit', default=None)
+
+
 class Channel(ABC, BaseModel):
     index: int=Field(description='Channel index')
     name: str=Field(description='Channel name')
@@ -69,6 +75,7 @@ class PSU(BaseModel):
 
     uri: Optional[str]=Field(default=None)
     idn: Optional[PSUIdn]=Field(description='PSU identification dict', default=None)
+    channel_data: Optional[Dict[int, ChannelData]]=Field(description='Initial channel data', default=None)
 
     @computed_field
     def online(self) -> bool:
