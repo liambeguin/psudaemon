@@ -3,14 +3,15 @@ import uvicorn
 from fastapi import FastAPI
 
 from .context import load_settings
-from .routers import monitoring, units
+from .routers import monitoring, units, settings
 
 
 def main():
-    settings = load_settings()
-
     app = FastAPI()
-    app.include_router(units.router)
-    app.include_router(monitoring.router)
+    s = load_settings()
 
-    uvicorn.run(app, host='0.0.0.0', **dict(settings.uvicorn))
+    app.include_router(settings.router)
+    app.include_router(monitoring.router)
+    app.include_router(units.router)
+
+    uvicorn.run(app, host='0.0.0.0', **dict(s.uvicorn))
