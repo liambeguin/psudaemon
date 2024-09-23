@@ -9,7 +9,11 @@ from pydantic import computed_field
 
 from . import common
 
-model_string = ('Keysight Technologies,E36313A', 'E36300')
+model_string = (
+    'E36300',
+    'Keysight Technologies,E36312A',
+    'Keysight Technologies,E36313A',
+)
 
 
 class Endpoint:
