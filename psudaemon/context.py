@@ -27,6 +27,36 @@ class Conffile():
         with self.path.open(encoding='utf-8') as f:
             return self.yaml.load(f.read())
 
+    def update(self, units: dict) -> dict:
+        conf = self.read()
+
+        new_conf = {}
+        new_conf['settings'] = conf['settings']
+        new_conf['units'] = []
+
+        for u in units.values():
+            channel_data = {}
+            for c in u.channels:
+                channel_data[c.index] = dict(
+                    name=c.name,
+                    current_limit=c.current_limit,
+                    voltage_limit=c.voltage_limit,
+                )
+
+            new_conf['units'].append(dict(
+                name=u.name,
+                model=u.model,
+                uri=u.uri,
+                pyvisa_args=u.pyvisa_args,
+                channel_data=channel_data,
+            ))
+
+        return new_conf
+
+    def write(self, data: dict) -> None:
+        with self.path.open('w', encoding='utf-8') as f:
+            self.yaml.dump(data, f)
+
 
 def load_settings() -> Settings:
     '''Load settings from file.'''
