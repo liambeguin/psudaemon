@@ -61,6 +61,9 @@ class PSUDaemonClient:
         def _fmt_one(value):
             return f'{value: >6.3f}' if value is not None else str(value)
 
+        if not isinstance(self._data, list):
+            self._data = [self._data]
+
         if self.format == 'table':
             table = Table(show_header=True)
 
