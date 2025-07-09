@@ -1,5 +1,6 @@
 import logging
 import threading
+import os
 
 from typing import Any, Dict, List, Literal, Union
 
@@ -18,20 +19,50 @@ model_string = (
 
 class Endpoint:
     def __init__(self, ep):
-        self.ep = ep
-        self.lock = threading.Lock()
+        self._lock = threading.Lock()
+        self._ep = ep
+        self._uri = ep.resource_name
+        self._rm = pyvisa.ResourceManager()
+        self._reconnect_attempted = False
+
+    def _reconnect(self):
+        try:
+            self._ep.close()
+        except Exception:
+            pass
+
+        try:
+            self._ep = self._rm.open_resource(self._uri)
+            self._reconnect_attempted = False
+            logging.warning(f"[psudaemon] Reconnected to VISA device: {self._uri}")
+        except Exception as e:
+            logging.error(f"[psudaemon] VISA reconnection failed: {e}")
+            logging.warning("[psudaemon] Crashing service to trigger systemd restart...")
+            os._exit(1)  
 
     def write(self, *args, **kwargs):
-        self.lock.acquire()
-        self.ep.write(*args, **kwargs)
-        self.lock.release()
+        with self._lock:
+            try:
+                self._ep.write(*args, **kwargs)
+            except Exception as e:
+                logging.error(f"[psudaemon] VISA write failed: {e}")
+                if not self._reconnect_attempted:
+                    self._reconnect_attempted = True
+                    self._reconnect()
+                    return self.write(*args, **kwargs)
+                raise
 
     def query(self, *args, **kwargs):
-        self.lock.acquire()
-        ret = self.ep.query(*args, **kwargs)
-        self.lock.release()
-
-        return ret
+        with self._lock:
+            try:
+                return self._ep.query(*args, **kwargs)
+            except Exception as e:
+                logging.error(f"[psudaemon] VISA query failed: {e}")
+                if not self._reconnect_attempted:
+                    self._reconnect_attempted = True
+                    self._reconnect()
+                    return self.query(*args, **kwargs)
+                raise
 
 
 class E36300_Channel(common.Channel):
